@@ -1,4 +1,5 @@
 #!usr/bin/python3 #TODO make desktop launcher
+#include gps data support
 
 from tkinter import *
 import threading
@@ -47,6 +48,7 @@ def main():
     root.title("SenseTracker")
     data = ""
     coo = (-1,-1)
+    corrupt_flag = False
 
     t = Label(root, text = "")
     b1 = Label(root, text = "")
@@ -55,7 +57,7 @@ def main():
     w.config(font=("Arial", 44)) 
     t.config(font=("Arial", 44)) 
     b1.config(font=("Arial", 20)) 
-    b2.config(font=("Arial", 50)) 
+    b2.config(font=("Arial", 80)) 
     t.config(font=("Arial", 44)) 
     w.config(width=30)
     t.pack()
@@ -84,6 +86,7 @@ def main():
             except queue.Empty:
                 pass
             if val ==1:
+                corrupt_flag = True
                 w.config(text= "PACKAGE INTERRUPT", font=("Arial", 44)) 
                 b1.config(text = "Long: "+ str(coo[0]) + "          Lat: " + str(coo[1])) #add time TODO
                 root.update()
@@ -96,6 +99,7 @@ def main():
                 with data_Queue.mutex:
                     data_Queue.queue.clear()
             if val == 2:
+                corrupt_flag = True
                 w.config(text= "ACCELERATION INTERRUPT", font=("Arial", 44)) 
                 b1.config(text = "Long: "+ str(coo[0]) + "          Lat: " + str(coo[1])) #add time TODO
                 root.update()
@@ -110,6 +114,9 @@ def main():
         except queue.Empty: #Queue empty = no interrupts
             try:
                 data = data_Queue.get(False)
+                if corrupt_flag == True:
+                    b1.config(text = "Long: "+ str(coo[0]) + "          Lat: " + str(coo[1])) #add time TODO
+                    root.update()
             except queue.Empty:
                 pass
             print(data + 30*" ", end="\r", flush = True)
