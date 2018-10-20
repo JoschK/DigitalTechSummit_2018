@@ -119,7 +119,9 @@ def main():
                     root.update()
             except queue.Empty:
                 pass
-            print(data + 30*" ", end="\r", flush = True)
+            status.config(text=data)
+            root.update()
+            #print(data + 30*" ", end="\r", flush = True)
 
 if __name__ == "__main__":
     main()
